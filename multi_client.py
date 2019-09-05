@@ -36,6 +36,8 @@ def rcvMsg(sock):
             both.turn(100, 100, False)
          elif test[test.rfind("]") + 2:] == 'd':
             wheel.turn(-60,20,False)
+         elif test[test.rfind("]") + 2:] == 'q':
+            both.brake()
          elif "new connect" in test:
             sock.close()
             host = test[test.find("_")+1:test.rfind("/")]
@@ -43,7 +45,7 @@ def rcvMsg(sock):
             print(host)
             print(port)
             time.sleep(5)
-            runChat(host, port)
+            runChat(str(host), int(port))
 
          print(data.decode())
       except:
