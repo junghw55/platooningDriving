@@ -6,7 +6,6 @@ import keyboard
 import nxt.locator
 from nxt.sensor import *
 from nxt.motor import *
-
 from collections import OrderedDict
 
 from multiprocessing import Process
@@ -124,6 +123,9 @@ class CarManager:
       processes = Thread(target=self.messageHandler, args=('leader','w',))
       while True:
             flag = 0
+            #if(keyboard.is_pressed('q')):
+            #   flag = 5
+            #   processes = Thread(target=self.messageHandler, args=('leader','q',))
             if (keyboard.is_pressed('w')):
                flag = 1
                processes = Thread(target=self.messageHandler, args=('leader','w',))
@@ -136,13 +138,13 @@ class CarManager:
             elif(keyboard.is_pressed('d')):
                flag = 4
                processes = Thread(target=self.messageHandler, args=('leader','d',))
-            elif(keyboard.is_pressed('q')):
-               flag = 5
-               processes = Thread(target=self.messageHandler, args=('leader','q',))
 
+            #if flag == 5:
+            #   processes.start()
+            #   both.brake()
             if flag == 1:
                processes.start()
-               both.turn(-100, 100, False)
+               both.turn(-100, 500, False)
             elif flag == 2:
                processes.start()
                wheel.turn(60,20,False)
@@ -152,9 +154,26 @@ class CarManager:
             elif flag == 4:
                processes.start()
                wheel.turn(-60,20,False)
-            elif flag == 5:
+
+   def keyboard_brake(self):
+      global brick
+      global wheel
+      global left
+      global right
+      global both
+
+
+      processes = Thread(target=self.messageHandler, args=('leader','w',))
+      while True:
+            flag = 0
+            if (keyboard.is_pressed('q')):
+               flag = 6
+               processes = Thread(target=self.messageHandler, args=('leader','q',))
+
+            if flag == 6:
                processes.start()
                both.brake()
+
 
 class MyTcpHandler(SocketServer.BaseRequestHandler):
    print("handle comein")
@@ -164,6 +183,9 @@ class MyTcpHandler(SocketServer.BaseRequestHandler):
    t.daemon = True
    t.start()
 
+   b = Thread(target=car_class.keyboard_brake)
+   b.daemon = True
+   b.start()
    def handle(self):
       print('[%s] connect' %self.client_address[0])
       print('[%s] connect' %self.client_address[1])
