@@ -9,6 +9,7 @@ from nxt.motor import *
 
 from collections import OrderedDict
 
+from multiprocessing import Process
 #brick = nxt.locator.find_one_brick()
 #wheel = nxt.Motor(brick, PORT_A)
 #left = nxt.Motor(brick, PORT_B)
@@ -61,8 +62,12 @@ class CarManager:
       #   print(self.cars)
       #   location = self.cars.index(car_ip)
       lock.acquire()
+
+      del self.cars[c]
+
       for idc , c in enumerate(self.cars.keys(),0):
-         if idc > location:
+         if idc >= location:
+            print(c)
             self.sendMessageTo(c, "new connect_" + car_ip + "/" + new_port)
             del self.cars[c]
       lock.release()
@@ -104,6 +109,7 @@ class CarManager:
          if car_ip in addr:
             print("sendsend")
             print(car_ip)
+            print(msg)
             conn.sendto(msg.encode(), addr)
             break
 
@@ -114,22 +120,41 @@ class CarManager:
       global right
       global both
 
-      while True:
-            if (keyboard.is_pressed('w')):
-               both.turn(-100, 100, False)
-               self.messageHandler('leader', 'w')
-            elif(keyboard.is_pressed('a')):
-               wheel.turn(60,20,False)
-               self.messageHandler('leader', 'a')
-            elif(keyboard.is_pressed('s')):
-               both.turn(100, 100, False)
-               self.messageHandler('leader', 's')
-            elif(keyboard.is_pressed('d')):
-               wheel.turn(-60,20,False)
-               self.messageHandler('leader', 'd')
-            elif(keyboard.is_pressed('q')):
-               self.messageHandler('leader', 'stop')
 
+      processes = Thread(target=self.messageHandler, args=('leader','w',))
+      while True:
+            flag = 0
+            if (keyboard.is_pressed('w')):
+               flag = 1
+               processes = Thread(target=self.messageHandler, args=('leader','w',))
+            elif(keyboard.is_pressed('a')):
+               flag = 2
+               processes = Thread(target=self.messageHandler, args=('leader','a',))
+            elif(keyboard.is_pressed('s')):
+               flag = 3
+               processes = Thread(target=self.messageHandler, args=('leader','s',))
+            elif(keyboard.is_pressed('d')):
+               flag = 4
+               processes = Thread(target=self.messageHandler, args=('leader','d',))
+            elif(keyboard.is_pressed('q')):
+               flag = 5
+               processes = Thread(target=self.messageHandler, args=('leader','q',))
+
+            if flag == 1:
+               processes.start()
+               both.turn(-100, 100, False)
+            elif flag == 2:
+               processes.start()
+               wheel.turn(60,20,False)
+            elif flag == 3:
+               processes.start()
+               both.turn(100, 100, False)
+            elif flag == 4:
+               processes.start()
+               wheel.turn(-60,20,False)
+            elif flag == 5:
+               processes.start()
+               both.brake()
 
 class MyTcpHandler(SocketServer.BaseRequestHandler):
    print("handle comein")
@@ -138,6 +163,7 @@ class MyTcpHandler(SocketServer.BaseRequestHandler):
    t = Thread(target=car_class.keyboard_handle)
    t.daemon = True
    t.start()
+
    def handle(self):
       print('[%s] connect' %self.client_address[0])
       print('[%s] connect' %self.client_address[1])
@@ -163,6 +189,7 @@ class MyTcpHandler(SocketServer.BaseRequestHandler):
       print('[%s] connect stop' %self.client_address[0])
       print(self.client_address[0])
       print(new_port)
+      print("-----=-=-=-=-=-=-=-=-=-=-=-=-")
       car_list, car_location = self.car_class.removeCar(self.client_address[0], new_port)
 
 
