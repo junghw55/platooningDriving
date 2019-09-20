@@ -25,23 +25,23 @@ def rcvMsg(sock):
    while True:
       try:
          data = sock.recv(1024)
-         test = data.decode()
+         msg_data = data.decode()
          if not data:
             break
-         elif (test[test.rfind("]") + 2:] == 'forward'):
+         elif (msg_data[msg_data.rfind("]") + 2:] == 'forward'):
             both.turn(-100, 100, False)
-         elif test[test.rfind("]") + 2:] == 'left':
+         elif msg_data[msg_data.rfind("]") + 2:] == 'left':
             wheel.turn(60,20,False)
-         elif test[test.rfind("]") + 2:] == 'backward':
+         elif msg_data[msg_data.rfind("]") + 2:] == 'backward':
             both.turn(100, 100, False)
-         elif test[test.rfind("]") + 2:] == 'right':
+         elif msg_data[msg_data.rfind("]") + 2:] == 'right':
             wheel.turn(-60,20,False)
-         elif test[test.rfind("]") + 2:] == 'sqlit':
+         elif msg_data[msg_data.rfind("]") + 2:] == 'brake':
             both.brake()
-         elif "new connect" in test:
+         elif "new connect" in msg_data:
             sock.close()
-            host = test[test.find("_")+1:test.rfind("/")]
-            port = test[test.rfind("/")+1:]
+            host = msg_data[msg_data.find("_")+1:msg_data.rfind("/")]
+            port = msg_data[msg_data.rfind("/")+1:]
             print(host)
             print(port)
             time.sleep(5)
