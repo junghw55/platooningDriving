@@ -123,25 +123,19 @@ class CarManager:
       processes = Thread(target=self.messageHandler, args=('leader','w',))
       while True:
             flag = 0
-            #if(keyboard.is_pressed('q')):
-            #   flag = 5
-            #   processes = Thread(target=self.messageHandler, args=('leader','q',))
             if (keyboard.is_pressed('w')):
                flag = 1
-               processes = Thread(target=self.messageHandler, args=('leader','w',))
+               processes = Thread(target=self.messageHandler, args=('leader','forward',))
             elif(keyboard.is_pressed('a')):
                flag = 2
-               processes = Thread(target=self.messageHandler, args=('leader','a',))
+               processes = Thread(target=self.messageHandler, args=('leader','left',))
             elif(keyboard.is_pressed('s')):
                flag = 3
-               processes = Thread(target=self.messageHandler, args=('leader','s',))
+               processes = Thread(target=self.messageHandler, args=('leader','backword',))
             elif(keyboard.is_pressed('d')):
                flag = 4
-               processes = Thread(target=self.messageHandler, args=('leader','d',))
+               processes = Thread(target=self.messageHandler, args=('leader','right',))
 
-            #if flag == 5:
-            #   processes.start()
-            #   both.brake()
             if flag == 1:
                processes.start()
                both.turn(-100, 500, False)
@@ -163,12 +157,12 @@ class CarManager:
       global both
 
 
-      processes = Thread(target=self.messageHandler, args=('leader','w',))
+      processes = Thread(target=self.messageHandler, args=('leader','forward',))
       while True:
             flag = 0
-            if (keyboard.is_pressed('q')):
+            if (keyboard.is_pressed('b')): # b 는 brake 를 뜻함.
                flag = 6
-               processes = Thread(target=self.messageHandler, args=('leader','q',))
+               processes = Thread(target=self.messageHandler, args=('leader','brake',))
 
             if flag == 6:
                processes.start()
