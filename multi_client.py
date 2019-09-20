@@ -28,15 +28,15 @@ def rcvMsg(sock):
          test = data.decode()
          if not data:
             break
-         elif (test[test.rfind("]") + 2:] == 'w'):
+         elif (test[test.rfind("]") + 2:] == 'forward'):
             both.turn(-100, 100, False)
-         elif test[test.rfind("]") + 2:] == 'a':
+         elif test[test.rfind("]") + 2:] == 'left':
             wheel.turn(60,20,False)
-         elif test[test.rfind("]") + 2:] == 's':
+         elif test[test.rfind("]") + 2:] == 'backward':
             both.turn(100, 100, False)
-         elif test[test.rfind("]") + 2:] == 'd':
+         elif test[test.rfind("]") + 2:] == 'right':
             wheel.turn(-60,20,False)
-         elif test[test.rfind("]") + 2:] == 'q':
+         elif test[test.rfind("]") + 2:] == 'sqlit':
             both.brake()
          elif "new connect" in test:
             sock.close()
@@ -69,7 +69,7 @@ def runChat(HOST, PORT):
    t.start()
 
    while True:
-      if (keyboard.is_pressed('m')):
+      if (keyboard.is_pressed('s')):  # s 는 split 을 뜻함.
          new_port = random.randint(1,65535)
          print("byebye")
          sock.send('stop_'+str(new_port).encode())
