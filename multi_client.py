@@ -69,7 +69,7 @@ def runChat(HOST, PORT):
    t.start()
 
    while True:
-      if (keyboard.is_pressed('s')):  # s 는 split 을 뜻함.
+      if (keyboard.is_pressed('o')):  # o 는 out 을 뜻함.
          new_port = random.randint(1,65535)
          print("byebye")
          sock.send('stop_'+str(new_port).encode())
